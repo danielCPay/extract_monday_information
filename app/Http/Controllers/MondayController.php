@@ -17,16 +17,17 @@ class MondayController extends Controller
     {
         $response = new ApiResponse();
         try {
-            $response_api_monday = MondayLogic::ReadApiMonday();
+            $datos = (array)$request->input();
+            $item_id = $datos['item_id'];
 
-            $data = $response_api_monday['items'][0]['column_values'];         
+            $response_api_monday = MondayLogic::ReadApiMonday($item_id);
+            $data = $response_api_monday['data']['items'][0]['column_values'];
 
             foreach ($data as $column_values) {
-                $item[] = array($column_values['id'] => $column_values['text']);                
+                $item[] = array($column_values['id'] => $column_values['text']);
             };
            
             $response = MondayLogic::InsertRecordApiMonday($item);
-           
         } catch (\Exception $e) {
             return ApiResponse::error('Error' . $e, 404, $response);
         }
